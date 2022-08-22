@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:odc/modules/reset_password/reset_password_screen.dart';
 import 'package:odc/shared/components/components.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -60,7 +61,7 @@ class VerifyOTPScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                         fieldHeight: 55,
                         fieldWidth: 50,
-                        activeFillColor:Colors.blueAccent,
+                        activeFillColor:HexColor('#1ABC00'),
                         inactiveFillColor: Colors.white,
                       ),
                       animationDuration: const Duration(milliseconds: 300),

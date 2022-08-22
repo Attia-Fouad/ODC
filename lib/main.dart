@@ -1,12 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:odc/shared/bloc_observer.dart';
 import 'package:odc/shared/components/constants.dart';
 import 'package:odc/shared/networks/local/cache_helper.dart';
 import 'package:odc/shared/networks/remote/dio_helper.dart';
 import 'package:odc/shared/styles/themes.dart';
 
-import 'layout/home_layout.dart';
+import 'layout/cubit/cubit.dart';
+import 'layout/cubit/states.dart';
+import 'layout/home_layout/home_layout_screen.dart';
 import 'modules/authintication/auth_screen.dart';
 
 Future<void> main() async {
@@ -15,6 +18,7 @@ Future<void> main() async {
   DioHelper.init();
   await CacheHelper.init();
   token = CacheHelper.getData(key:'token');
+  userToken = CacheHelper.getData(key:'userToken');
   Widget widget;
   if (token!=null) {
     widget = const HomeLayoutScreen();
@@ -36,12 +40,22 @@ class MyApp extends StatelessWidget  {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.light,
-      home: startWidget,
+    return BlocProvider(
+      create: (BuildContext context) => AppCubit(),
+      child: BlocConsumer<AppCubit, AppStates>(
+        listener: (context, states) {
+        },
+        builder: (context, states) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: ThemeMode.light,
+            home: startWidget,
+          );
+        },
+      ),
     );
+
   }
 }

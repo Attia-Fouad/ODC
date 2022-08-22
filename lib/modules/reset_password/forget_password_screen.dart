@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:odc/modules/reset_password/verify_otp_screen.dart';
 import 'package:odc/shared/components/components.dart';
 
@@ -62,12 +63,21 @@ class ForgetPasswordScreen extends StatelessWidget {
                         },
                       ),
                       const SizedBox(height: 20,),
-                      defaultButton(text: 'Submit', function: (){
-                        if (formKey.currentState!.validate()) {
-                          cubit.forgetPassword(email: emailController.text);
+                      Conditional.single(
+                        context: context,
+                        conditionBuilder: (BuildContext context) =>
+                        states is !ForgetPasswordLoadingState,
+                        widgetBuilder: (BuildContext context) =>
+                            defaultButton(text: 'Submit', function: (){
+                              if (formKey.currentState!.validate()) {
+                                cubit.forgetPassword(email: emailController.text);
 
-                        }
-                      },radius: 8),
+                              }
+                            },radius: 8),
+                        fallbackBuilder: (BuildContext context) =>
+                        const Center(child: CircularProgressIndicator()),
+                      ),
+
 
 
                     ],

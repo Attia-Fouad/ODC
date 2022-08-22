@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:odc/modules/authintication/auth_screen.dart';
 import 'package:odc/modules/reset_password/verify_otp_screen.dart';
 import 'package:odc/shared/components/components.dart';
@@ -129,15 +130,24 @@ class ResetPasswordScreen extends StatelessWidget {
 
 
                       const SizedBox(height: 20,),
-                      defaultButton(text: 'Confirm', function: (){
-                        if (formKey.currentState!.validate()) {
-                          cubit.resetPassword(
-                            otp: otp,
-                              email: email,
-                            password: passwordController2.text,
-                          );
-                        }
-                      },radius: 8),
+                      Conditional.single(
+                        context: context,
+                        conditionBuilder: (BuildContext context) =>
+                        states is !ResetPasswordLoadingState,
+                        widgetBuilder: (BuildContext context) =>
+                            defaultButton(text: 'Confirm', function: (){
+                              if (formKey.currentState!.validate()) {
+                                cubit.resetPassword(
+                                  otp: otp,
+                                  email: email,
+                                  password: passwordController2.text,
+                                );
+                              }
+                            },radius: 8),
+                        fallbackBuilder: (BuildContext context) =>
+                        const Center(child: CircularProgressIndicator()),
+                      ),
+
 
 
                     ],

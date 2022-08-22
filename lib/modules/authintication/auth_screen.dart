@@ -5,7 +5,7 @@ import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:odc/modules/reset_password/forget_password_screen.dart';
-import '../../layout/home_layout.dart';
+import '../../layout/home_layout/home_layout_screen.dart';
 import '../../shared/components/components.dart';
 import '../../shared/components/constants.dart';
 import '../../shared/networks/end_points.dart';
@@ -41,6 +41,12 @@ class AuthScreen extends StatelessWidget  {
                   text: states.loginModel.message.toString(),
                   state: ToastStates.SUCCESS);
               navigateAndFinish(context, const HomeLayoutScreen());
+              CacheHelper.saveData(
+                  key: 'userToken', value: states.loginModel.data!.accessToken)
+                  .then((value) {
+                userToken = states.loginModel.data!.accessToken!;
+              }
+              );
               if(AuthCubit.get(context).loginIsChecked)
                 {
                   CacheHelper.saveData(
@@ -69,6 +75,12 @@ class AuthScreen extends StatelessWidget  {
                 state: ToastStates.SUCCESS,
               );
               navigateAndFinish(context, const HomeLayoutScreen());
+              CacheHelper.saveData(
+                  key: 'userToken', value: states.loginModel.data!.accessToken)
+                  .then((value) {
+                userToken = states.loginModel.data!.accessToken!;
+              }
+              );
               if(AuthCubit.get(context).registerIsChecked){
               CacheHelper.saveData(
                   key: 'token', value: states.loginModel.data!.accessToken)
