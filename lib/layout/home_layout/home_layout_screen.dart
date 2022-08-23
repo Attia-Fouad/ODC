@@ -1,5 +1,5 @@
 
-
+//................
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,33 +24,27 @@ class HomeLayoutScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit=AppCubit.get(context);
         return Scaffold(
-          body:SafeArea(
-            child: PageView(
-              controller: cubit.pageController,
-              onPageChanged: (index){
-                cubit.changeBottom(index);
-              },
-              scrollDirection: Axis.horizontal,
-              children:  const [
-                 SearchScreen(),
-                 ScanScreen(),
-                 HomeScreen(),
-                 NotificationScreen(),
-                 ProfileScreen(),
-              ],
-            ),
-          ),
+          body:cubit.screens[cubit.currentIndex],
           bottomNavigationBar:CurvedNavigationBar(
-            items: const <Widget>[
+            items:  <Widget>[
               ImageIcon(
                 AssetImage("assets/images/leave.png"),
+                color: cubit.currentIndex==0?Colors.white:Colors.black,
               ),
               Icon(
                 IconBroken.Scan,
+                color: cubit.currentIndex==1?Colors.white:Colors.black,
               ),
-              Icon(IconBroken.Home),
-              Icon(IconBroken.Notification),
-              Icon(IconBroken.Profile),
+              Icon(
+                  IconBroken.Home,
+                color: cubit.currentIndex==2?Colors.white:Colors.black,
+              ),
+              Icon(IconBroken.Notification,
+                color: cubit.currentIndex==3?Colors.white:Colors.black,
+              ),
+              Icon(IconBroken.Profile,
+                color: cubit.currentIndex==4?Colors.white:Colors.black,
+              ),
             ],
             index: cubit.currentIndex,
             height: 64.0,
@@ -60,7 +54,6 @@ class HomeLayoutScreen extends StatelessWidget {
             animationCurve: Curves.easeInOut,
             animationDuration: const Duration(milliseconds: 600),
             onTap: (index) {
-              cubit.pageController.animateToPage(index, duration: const Duration(milliseconds: 600), curve: Curves.easeInOut,);
               cubit.changeBottom(index);
             },
             letIndexChange: (index) => true,

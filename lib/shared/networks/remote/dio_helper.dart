@@ -10,7 +10,7 @@ class DioHelper {
 
   static Future<Response> getData({
     required String url,
-    required String token,
+    token,
     query,
   }) async {
     dio.options.headers = {
@@ -27,11 +27,14 @@ class DioHelper {
   static Future<Response> postData({
     required String url,
     query,
+    token,
     required data,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Authorization': "Bearer $token",
+
     };
     return dio.post(
       url,
@@ -43,11 +46,14 @@ class DioHelper {
   static Future<Response> putData({
     required String url,
     query,
+    token,
     required data,
   }) async {
     dio.options.headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Authorization': "Bearer $token",
+
     };
     return dio.put(
       url,
@@ -55,4 +61,25 @@ class DioHelper {
       data: data,
     );
   }
+
+  static Future<Response> patchData({
+    required String url,
+    token,
+    query,
+    required data,
+  }) async {
+    dio.options.headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': "Bearer $token",
+    };
+    return dio.patch(
+      url,
+      queryParameters: query,
+      data: data,
+    );
+  }
+
+
+
 }

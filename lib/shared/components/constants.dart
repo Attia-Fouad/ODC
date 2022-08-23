@@ -14,5 +14,5 @@ void signOut(context,widget) {
 
 
  String? token;
- String? userToken;
+ bool? rememberMe;
 

@@ -62,3 +62,52 @@ class AppSuccessAddItemToCartState extends AppStates {}
 class AppSuccessRemoveItemFromCartState extends AppStates {}
 class AppSuccessCalcTotalState extends AppStates {}
 
+
+
+class AppLoadingGetMyPostsState extends AppStates {}
+
+class AppSuccessGetMyPostsState extends AppStates {}
+
+class AppErrorGetMyPostsState extends AppStates {
+  String? error;
+  AppErrorGetMyPostsState({this.error});
+}
+class AppLoadingUpdateUserNameState extends AppStates {}
+
+class AppSuccessUpdateUserNameState extends AppStates {}
+
+class AppErrorUpdateUserNameState extends AppStates {
+  String? error;
+  AppErrorUpdateUserNameState( {this.error});
+}
+
+class AppLoadingUpdateUserEmailState extends AppStates {}
+
+class AppSuccessUpdateUserEmailState extends AppStates {}
+
+class AppErrorUpdateUserEmailState extends AppStates {
+  String? error;
+  AppErrorUpdateUserEmailState( {this.error});
+
+}
+
+
+class AppSuccessGetLocationState extends AppStates {}
+
+
+
+class AppLoadingClaimFreeSeedsState extends AppStates {}
+
+class AppSuccessClaimFreeSeedsState extends AppStates {
+  String? message;
+  AppSuccessClaimFreeSeedsState( {this.message});
+}
+
+class AppErrorClaimFreeSeedsState extends AppStates {
+  String? error;
+  AppErrorClaimFreeSeedsState( {this.error});
+
+}
+
+
+

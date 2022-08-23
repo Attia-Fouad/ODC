@@ -1,21 +1,24 @@
-
-
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:odc/layout/cubit/states.dart';
-import 'package:odc/modules/authintication/cubit/cubit.dart';
+import 'package:odc/modules/posts/posts_screen.dart';
 import 'package:odc/modules/scan/scan_screen.dart';
-
-import '../../models/UserModel.dart';
+import 'package:odc/shared/components/components.dart';
+import '../../location_helper.dart';
+import '../../models/MyPostsModel.dart';
+import '../../models/user_model/UserModel.dart';
 import '../../modules/home/home_screen.dart';
 import '../../modules/notification/notification_screen.dart';
 import '../../modules/profile/profile_screen.dart';
-import '../../modules/search/search_screen.dart';
 import '../../shared/components/constants.dart';
 import '../../shared/networks/end_points.dart';
 import '../../shared/networks/remote/dio_helper.dart';
-
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
   static AppCubit get(context) => BlocProvider.of(context);
@@ -28,12 +31,24 @@ class AppCubit extends Cubit<AppStates> {
     currentIndex = index;
     if(index==4)
       {
-          getUserData(userToken!);
-
+          getUserData(token!);
       }
+    if(index==0)
+    {
+      getUserData(token!);
+      getMyPosts(token!);
+    }
 
     emit(AppChangeBottomNavState());
   }
+
+  List<Widget> screens = [
+  const PostsScreen(),
+  const ScanScreen(),
+  const HomeScreen(),
+  const NotificationScreen(),
+  const ProfileScreen(),
+  ];
 
   UserModel? userModel;
   void getUserData(String token) {
@@ -51,114 +66,175 @@ class AppCubit extends Cubit<AppStates> {
       emit(AppErrorUserDataState(error: error.toString()));
     });
   }
-/*
-  CategoriesModel? categoriesModel;
-  void getCategoriesData() {
-    DioHelper.getData(
-      url: GET_CATEGORIES,
-    ).then((value) {
-      categoriesModel = CategoriesModel.fromJson(value.data);
 
-      emit(AppSuccessCategoriesState());
+
+  MyPostsModel? myPostsModel;
+  void getMyPosts(String token) {
+    emit(AppLoadingGetMyPostsState());
+    DioHelper.getData(
+      url: MY_POSTS,
+      token: token,
+    ).then((value) {
+      myPostsModel = MyPostsModel.fromJson(value.data);
+      emit(AppSuccessGetMyPostsState());
     }).catchError((error) {
       if (kDebugMode) {
         print(error.toString());
       }
-      emit(AppErrorCategoriesState(error: error.toString()));
+      emit(AppErrorGetMyPostsState(error: error.toString()));
     });
   }
 
-  late ChangeFavoritesModel changeFavoritesModel;
-
-  void changeFavorites({required int productId}) {
-    favorites[productId] = !favorites[productId]!;
-    emit(AppFavoritesState());
-    DioHelper.postData(
-      url: FAVORITES,
-      data: {
-        'product_id': productId,
-      },
-      token: token,
-    ).then((value) {
-      changeFavoritesModel = ChangeFavoritesModel.fromJson(value.data);
-      //print(value.data);
-      if (!changeFavoritesModel.status) {
-        favorites[productId] = !favorites[productId]!;
-      } else {
-        getFavorites();
-      }
-      emit(AppSuccessFavoritesState(changeFavoritesModel));
-    }).catchError((error) {
-      favorites[productId] = !favorites[productId]!;
-      showToast(text: error.toString(), state: ToastStates.ERROR);
-      emit(AppErrorFavoritesState());
-    });
-  }
-
-  FavoritesModel? favoritesModel;
-  void getFavorites() {
-    emit(AppLoadingGetFavoritesState());
-    DioHelper.getData(
-      url: FAVORITES,
-      token: token,
-    ).then((value) {
-      favoritesModel = FavoritesModel.fromJson(value.data);
-      emit(AppSuccessGetFavoritesState());
-    }).catchError((error) {
-      if (kDebugMode) {
-        print(error.toString());
-      }
-      emit(AppErrorGetFavoritesState(error: error.toString()));
-    });
-  }
-
-  AppLoginModel? userDataModel;
-  void getUserData() {
-    emit(AppLoadingUserDataState());
-    DioHelper.getData(
-      url: PROFILE,
-      token: token,
-    ).then((value) {
-      userDataModel = AppLoginModel.fromJson(value.data);
-      //print(value.data.toString());
-
-      emit(AppSuccessUserDataState());
-    }).catchError((error) {
-      if (kDebugMode) {
-        print(error.toString());
-      }
-      emit(AppErrorUserDataState(error: error.toString()));
-    });
-  }
-
-  void updateUserData({
-    required String name,
-    required String email,
-    required String phone,
+  void updateUserName({
+    required String token,
+    required String firstName,
+    required String lastName,
   }) {
-    emit(AppLoadingUpdateUserState());
-    DioHelper.putData(
-      url: UPDATE_PROFILE,
+    emit(AppLoadingUpdateUserNameState());
+
+    DioHelper.patchData(
       token: token,
-      data: {
-        'name': name,
-        'email': email,
-        'phone': phone,
-      },
-    ).then((value) {
-      userDataModel = AppLoginModel.fromJson(value.data);
-      //print(value.data.toString());
-      emit(AppSuccessUpdateUserState());
-      showToast(text: 'Update Successfully', state: ToastStates.SUCCESS);
-    }).catchError((error) {
-      showToast(text: error.toString(), state: ToastStates.ERROR);
+        url: UPDATE_USER_NAME,
+        data: {
+          'firstName': firstName,
+          'lastName': lastName,
+        }).then((value) {
+      showToast(state: ToastStates.SUCCESS,text:value.data['message']);
+      emit(AppSuccessUpdateUserNameState());
+    })
+        .catchError((error) {
       if (kDebugMode) {
         print(error.toString());
       }
-      emit(AppErrorUpdateUserState(error: error.toString()));
+      if(error is DioError)
+      {
+        showToast(state: ToastStates.ERROR,text: error.response!.data!['message']);
+      }
+      emit(AppErrorUpdateUserNameState(error: error.toString()));
+    });
+  }
+
+  void updateUserEmail({
+    required String token,
+    required String email,
+  }) {
+    emit(AppLoadingUpdateUserEmailState());
+
+    DioHelper.patchData(
+        token: token,
+        url: UPDATE_USER_NAME,
+        data: {
+          'email': email,
+        }).then((value) {
+      showToast(state: ToastStates.SUCCESS,text:value.data['message']);
+      emit(AppSuccessUpdateUserEmailState());
+    })
+        .catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      if(error is DioError)
+      {
+        showToast(state: ToastStates.ERROR,text: error.response!.data!['message']);
+      }
+      emit(AppErrorUpdateUserEmailState(error: error.toString()));
     });
   }
 
 
-*/
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    getCurrentLocation();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    position= await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition();
+  }
+
+
+   Position? position;
+
+
+
+  Future<void> getCurrentLocation() async {
+    await LocationHelper.determinePosition();
+    position =
+    await Geolocator.getLastKnownPosition();
+    getAddress(position);
+    print('My Lat Log ..........');
+    print(position?.longitude);
+    print(position?.latitude);
+    emit(AppSuccessGetLocationState());
+  }
+
+  dynamic address;
+  Future<void> getAddress(Position? p) async
+  {
+    List<Placemark> placemarks = await placemarkFromCoordinates(p!.latitude, p.longitude);
+    address=placemarks[0].locality;
+
+  }
+
+
+  void claimFreeSeeds({
+    required String token,
+    required String address,
+  }) {
+    emit(AppLoadingClaimFreeSeedsState());
+
+    DioHelper.postData(
+        token: token,
+        url: CLAIM_FREE_SEEDS,
+        data: {
+          'address': address,
+        }).then((value) {
+      showToast(state: ToastStates.SUCCESS,text:value.data['message']);
+      emit(AppSuccessClaimFreeSeedsState(message: value.data['type']));
+    })
+        .catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      if(error is DioError)
+      {
+        showToast(state: ToastStates.ERROR,text: error.response!.data!['message']);
+      }
+      emit(AppErrorClaimFreeSeedsState(error: error.toString()));
+    });
+  }
+
+
+
+
+
 }

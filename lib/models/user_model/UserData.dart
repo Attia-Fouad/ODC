@@ -1,5 +1,5 @@
-class Data {
-  Data({
+class UserData {
+  UserData({
       this.userId, 
       this.firstName, 
       this.lastName, 
@@ -10,7 +10,7 @@ class Data {
       this.userPoints, 
       this.userNotification,});
 
-  Data.fromJson(dynamic json) {
+  UserData.fromJson(dynamic json) {
     userId = json['userId'];
     firstName = json['firstName'];
     lastName = json['lastName'];
@@ -19,7 +19,12 @@ class Data {
     address = json['address'];
     role = json['role'];
     userPoints = json['UserPoints'];
-
+    if (json['UserNotification'] != null) {
+      userNotification = [];
+      json['UserNotification'].forEach((v) {
+        userNotification?.add(v);
+      });
+    }
   }
   String? userId;
   String? firstName;
@@ -30,21 +35,5 @@ class Data {
   String? role;
   dynamic userPoints;
   List<dynamic>? userNotification;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['userId'] = userId;
-    map['firstName'] = firstName;
-    map['lastName'] = lastName;
-    map['email'] = email;
-    map['imageUrl'] = imageUrl;
-    map['address'] = address;
-    map['role'] = role;
-    map['UserPoints'] = userPoints;
-    if (userNotification != null) {
-      map['UserNotification'] = userNotification?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
 
 }

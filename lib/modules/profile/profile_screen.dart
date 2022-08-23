@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:odc/layout/cubit/cubit.dart';
+import 'package:odc/modules/profile/edit_email_screen.dart';
+import 'package:odc/modules/profile/edit_name_screen.dart';
+import 'package:odc/shared/components/components.dart';
 
 import '../../layout/cubit/states.dart';
 import '../../shared/styles/icon_broken.dart';
@@ -20,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
         var userModel = AppCubit.get(context).userModel;
         return Conditional.single(
           context: context,
-          conditionBuilder: (BuildContext context) => userModel!.data!.firstName!.isNotEmpty,
+          conditionBuilder: (BuildContext context) => cubit.userModel?.data!=null,
           widgetBuilder: (BuildContext context) =>  Scaffold(
             backgroundColor: Colors.black87,
             body: SafeArea(
@@ -33,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: NetworkImage(
                                   'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_1280.jpg',
@@ -124,7 +127,9 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ),
                           InkWell(
-                            onTap: (){},
+                            onTap: (){
+                              navigateTo(context, const EditNameScreen());
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18),
                               child: Container(
@@ -163,7 +168,10 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 20,),
                           InkWell(
-                            onTap: (){},
+                            onTap: (){
+                              navigateTo(context, const EditEmailScreen());
+
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18),
                               child: Container(

@@ -18,9 +18,9 @@ Future<void> main() async {
   DioHelper.init();
   await CacheHelper.init();
   token = CacheHelper.getData(key:'token');
-  userToken = CacheHelper.getData(key:'userToken');
+  rememberMe = CacheHelper.getData(key:'rememberMe');
   Widget widget;
-  if (token!=null) {
+  if (token!=null&&rememberMe!=null) {
     widget = const HomeLayoutScreen();
   } else {
     widget = const AuthScreen();

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:odc/modules/authintication/auth_screen.dart';
+
+import '../../shared/components/constants.dart';
 
 class ScanScreen extends StatelessWidget {
   const ScanScreen({Key? key}) : super(key: key);
@@ -7,7 +10,16 @@ class ScanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const Text('Scan'),
+      body:  TextButton(
+          child: Text('LogOut'),
+        onPressed: (){
+          signOut(
+            context,
+            const AuthScreen(),
+          );
+        },
+
+      ),
     );
   }
 }

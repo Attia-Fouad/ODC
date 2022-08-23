@@ -37,6 +37,7 @@ void navigateAndFinish(
 Widget defaultButton({
   double width = double.infinity,
   Color background = Colors.blue,
+  Color textColor = Colors.white,
   required String text,
   required Function function,
   bool isUpperCase = true,
@@ -54,9 +55,9 @@ Widget defaultButton({
           }*/
         child: Text(
           isUpperCase ? text.toUpperCase() : text,
-          style: const TextStyle(
+          style:  TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: textColor,
           ),
         ),
       ),

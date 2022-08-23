@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:odc/layout/cubit/cubit.dart';
+import 'package:odc/modules/address/address_screen.dart';
 import 'package:odc/modules/reset_password/forget_password_screen.dart';
 import '../../layout/home_layout/home_layout_screen.dart';
 import '../../shared/components/components.dart';
@@ -40,19 +42,28 @@ class AuthScreen extends StatelessWidget  {
               showToast(
                   text: states.loginModel.message.toString(),
                   state: ToastStates.SUCCESS);
-              navigateAndFinish(context, const HomeLayoutScreen());
+              if(states.loginModel.data!.user!.address!=null)
+                {
+                  navigateAndFinish(context, const HomeLayoutScreen());
+                }
+              else{
+                AppCubit.get(context).determinePosition();
+                navigateAndFinish(context,  AddressScreen());
+              }
+
               CacheHelper.saveData(
-                  key: 'userToken', value: states.loginModel.data!.accessToken)
+                  key: 'token', value: states.loginModel.data!.accessToken
+              )
                   .then((value) {
-                userToken = states.loginModel.data!.accessToken!;
+                token = states.loginModel.data!.accessToken!;
               }
               );
               if(AuthCubit.get(context).loginIsChecked)
                 {
                   CacheHelper.saveData(
-                      key: 'token', value: states.loginModel.data!.accessToken)
+                      key: 'rememberMe', value: true)
                       .then((value) {
-                    token = states.loginModel.data!.accessToken!;
+                    rememberMe = true;
                   }
                   );
                 }
@@ -74,19 +85,21 @@ class AuthScreen extends StatelessWidget  {
                 text: states.loginModel.message,
                 state: ToastStates.SUCCESS,
               );
-              navigateAndFinish(context, const HomeLayoutScreen());
-              CacheHelper.saveData(
-                  key: 'userToken', value: states.loginModel.data!.accessToken)
-                  .then((value) {
-                userToken = states.loginModel.data!.accessToken!;
-              }
-              );
-              if(AuthCubit.get(context).registerIsChecked){
+              AppCubit.get(context).determinePosition();
+              navigateAndFinish(context, AddressScreen());
               CacheHelper.saveData(
                   key: 'token', value: states.loginModel.data!.accessToken)
                   .then((value) {
                 token = states.loginModel.data!.accessToken!;
-              });}
+              });
+              if(AuthCubit.get(context).registerIsChecked){
+              CacheHelper.saveData(
+                  key: 'rememberMe', value: true)
+                  .then((value) {
+                rememberMe = true;
+              }
+              );
+              }
             } else {
               if (kDebugMode) {
                 print(states.loginModel.message);
