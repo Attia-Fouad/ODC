@@ -11,6 +11,7 @@ import 'layout/cubit/cubit.dart';
 import 'layout/cubit/states.dart';
 import 'layout/home_layout/home_layout_screen.dart';
 import 'modules/authintication/auth_screen.dart';
+import 'modules/splash/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,7 @@ Future<void> main() async {
   await CacheHelper.init();
   token = CacheHelper.getData(key:'token');
   rememberMe = CacheHelper.getData(key:'rememberMe');
-  Widget widget;
+
   if (token!=null&&rememberMe!=null) {
     widget = const HomeLayoutScreen();
   } else {
@@ -29,7 +30,7 @@ Future<void> main() async {
 
 
   runApp(MyApp(
-    startWidget: widget,
+    startWidget: widget!,
   ));
 }
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget  {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => AppCubit(),
+      create: (BuildContext context) => AppCubit()..getPlants(token!),
       child: BlocConsumer<AppCubit, AppStates>(
         listener: (context, states) {
         },
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget  {
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: ThemeMode.light,
-            home: startWidget,
+            home: splach(),
           );
         },
       ),

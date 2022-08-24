@@ -39,6 +39,7 @@ class AuthScreen extends StatelessWidget  {
               if (kDebugMode) {
                 print(states.loginModel.message);
               }
+              AppCubit.get(context).getPlants(states.loginModel.data!.accessToken!);
               showToast(
                   text: states.loginModel.message.toString(),
                   state: ToastStates.SUCCESS);
@@ -81,6 +82,7 @@ class AuthScreen extends StatelessWidget  {
 
           if (states is RegisterSuccessState) {
             if (states.loginModel.type=='Success') {
+              AppCubit.get(context).getPlants(states.loginModel.data!.accessToken!);
               showToast(
                 text: states.loginModel.message,
                 state: ToastStates.SUCCESS,

@@ -1,4 +1,6 @@
- import '../networks/local/cache_helper.dart';
+ import 'package:flutter/material.dart';
+
+import '../networks/local/cache_helper.dart';
 import 'components.dart';
 
 void signOut(context,widget) {
@@ -14,5 +16,7 @@ void signOut(context,widget) {
 
 
  String? token;
+ String baseUrl='https://lavie.orangedigitalcenteregypt.com';
  bool? rememberMe;
+ Widget? widget;
 

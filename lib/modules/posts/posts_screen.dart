@@ -4,6 +4,7 @@ import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:odc/modules/search/search_screen.dart';
 import 'package:odc/shared/components/components.dart';
+import 'package:odc/shared/components/constants.dart';
 
 import '../../layout/cubit/cubit.dart';
 import '../../layout/cubit/states.dart';
@@ -26,7 +27,7 @@ class PostsScreen extends StatelessWidget {
           conditionBuilder: (BuildContext context) =>cubit.myPostsModel != null&&cubit.userModel?.data!=null,
           widgetBuilder: (BuildContext context) => DefaultTabController(
             length: 2,
-            initialIndex: 0,
+            initialIndex: 1,
             child: Scaffold(
               appBar: AppBar(
                 title: const Center(child: Text(
@@ -175,6 +176,9 @@ class PostsScreen extends StatelessWidget {
                           '${userModel.data!.firstName} ${userModel.data!.lastName}',
                           style: const TextStyle(
                             color: Colors.black,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+
                             height: 1.4,
                           ),
                         ),
@@ -184,7 +188,12 @@ class PostsScreen extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      'Date',
+                      'a month ago',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w400,
+                        color: HexColor('#979797D6'),
+                      ),
                     ),
                   ],
                 ),
@@ -228,7 +237,8 @@ class PostsScreen extends StatelessWidget {
               color: HexColor('#8F8D8D'),
             ),
           ),
-          Padding(
+          if(model.imageUrl!=""&&model.imageUrl!=null)
+            Padding(
               padding: const EdgeInsetsDirectional.only(top: 5),
               child: Container(
                 height: 140.0,
@@ -239,7 +249,7 @@ class PostsScreen extends StatelessWidget {
                   ),
                   image: DecorationImage(
                     image: NetworkImage(
-                      'https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_1280.jpg',
+                      '${baseUrl}${model.imageUrl}'
                     ),
                     fit: BoxFit.cover,
                   ),

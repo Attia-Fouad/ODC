@@ -111,3 +111,14 @@ class AppErrorClaimFreeSeedsState extends AppStates {
 
 
 
+class AppLoadingGetPlantsState extends AppStates {}
+
+class AppSuccessGetPlantsState extends AppStates {}
+
+class AppErrorGetPlantsState extends AppStates {
+  String? error;
+  AppErrorGetPlantsState({this.error});
+}
+
+
+

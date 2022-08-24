@@ -19,6 +19,7 @@ import '../../modules/profile/profile_screen.dart';
 import '../../shared/components/constants.dart';
 import '../../shared/networks/end_points.dart';
 import '../../shared/networks/remote/dio_helper.dart';
+import '../plants_model/PlantsModel.dart';
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
   static AppCubit get(context) => BlocProvider.of(context);
@@ -29,6 +30,10 @@ class AppCubit extends Cubit<AppStates> {
 
   void changeBottom(int index) {
     currentIndex = index;
+    if(index==2)
+    {
+      getPlants(token!);
+    }
     if(index==4)
       {
           getUserData(token!);
@@ -84,6 +89,26 @@ class AppCubit extends Cubit<AppStates> {
       emit(AppErrorGetMyPostsState(error: error.toString()));
     });
   }
+
+
+  PlantsModel? plantsModel;
+  void getPlants(String token) {
+    emit(AppLoadingGetPlantsState());
+    DioHelper.getData(
+      url: PLANTS,
+      token: token,
+    ).then((value) {
+      plantsModel = PlantsModel.fromJson(value.data);
+      emit(AppSuccessGetPlantsState());
+    }).catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      emit(AppErrorGetPlantsState(error: error.toString()));
+    });
+  }
+
+
 
   void updateUserName({
     required String token,

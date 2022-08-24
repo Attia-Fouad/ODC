@@ -97,7 +97,7 @@ class AddressScreen extends StatelessWidget {
                           text: 'Save For Later',
                           background: HexColor('#F0F0F0'),
                           function: (){
-                            navigateTo(context, const HomeLayoutScreen());
+                            navigateAndFinish(context, const HomeLayoutScreen());
                           },radius: 10),
 
 

@@ -8,4 +8,5 @@ const USER_DATA = '/api/v1/user/me';
 const MY_POSTS = '/api/v1/forums/me';
 const UPDATE_USER_NAME = '/api/v1/user/me';
 const CLAIM_FREE_SEEDS = '/api/v1/user/me/claimFreeSeeds';
+const PLANTS = '/api/v1/plants';
 
