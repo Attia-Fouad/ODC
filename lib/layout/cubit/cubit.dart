@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -5,13 +8,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:odc/layout/cubit/states.dart';
+import 'package:odc/models/products_model/ProductsModel.dart';
 import 'package:odc/modules/posts/posts_screen.dart';
 import 'package:odc/modules/scan/scan_screen.dart';
 import 'package:odc/shared/components/components.dart';
 import '../../location_helper.dart';
 import '../../models/MyPostsModel.dart';
+import '../../models/blogs_model/BlogsModel.dart';
+import '../../models/plants_model/PlantsModel.dart';
+import '../../models/seeds_model/SeedsModel.dart';
+import '../../models/tools_model/ToolsModel.dart';
 import '../../models/user_model/UserModel.dart';
 import '../../modules/home/home_screen.dart';
 import '../../modules/notification/notification_screen.dart';
@@ -19,7 +28,6 @@ import '../../modules/profile/profile_screen.dart';
 import '../../shared/components/constants.dart';
 import '../../shared/networks/end_points.dart';
 import '../../shared/networks/remote/dio_helper.dart';
-import '../plants_model/PlantsModel.dart';
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
   static AppCubit get(context) => BlocProvider.of(context);
@@ -33,6 +41,10 @@ class AppCubit extends Cubit<AppStates> {
     if(index==2)
     {
       getPlants(token!);
+      getSeeds(token!);
+      getTools(token!);
+      getProducts(token!);
+      getBlogs(token!);
     }
     if(index==4)
       {
@@ -90,7 +102,6 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
-
   PlantsModel? plantsModel;
   void getPlants(String token) {
     emit(AppLoadingGetPlantsState());
@@ -107,6 +118,76 @@ class AppCubit extends Cubit<AppStates> {
       emit(AppErrorGetPlantsState(error: error.toString()));
     });
   }
+
+  ProductsModel? productsModel;
+  void getProducts(String token) {
+    emit(AppLoadingGetProductsState());
+    DioHelper.getData(
+      url: PRODUCTS,
+      token: token,
+    ).then((value) {
+      productsModel = ProductsModel.fromJson(value.data);
+      emit(AppSuccessGetProductsState());
+    }).catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      emit(AppErrorGetProductsState(error: error.toString()));
+    });
+  }
+
+  SeedsModel? seedsModel;
+  void getSeeds(String token) {
+    emit(AppLoadingGetSeedsState());
+    DioHelper.getData(
+      url: SEEDS,
+      token: token,
+    ).then((value) {
+      seedsModel = SeedsModel.fromJson(value.data);
+      emit(AppSuccessGetSeedsState());
+    }).catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      emit(AppErrorGetSeedsState(error: error.toString()));
+    });
+  }
+
+
+  ToolsModel? toolsModel;
+  void getTools(String token) {
+    emit(AppLoadingGetToolsState());
+    DioHelper.getData(
+      url: TOOLS,
+      token: token,
+    ).then((value) {
+      toolsModel = ToolsModel.fromJson(value.data);
+      emit(AppSuccessGetToolsState());
+    }).catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      emit(AppErrorGetToolsState(error: error.toString()));
+    });
+  }
+
+  BlogsModel? blogsModel;
+  void getBlogs(String token) {
+    emit(AppLoadingGetBlogsState());
+    DioHelper.getData(
+      url: BLOGS,
+      token: token,
+    ).then((value) {
+      blogsModel = BlogsModel.fromJson(value.data);
+      emit(AppSuccessGetBlogsState());
+    }).catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      emit(AppErrorGetBlogsState(error: error.toString()));
+    });
+  }
+
 
 
 
@@ -255,6 +336,65 @@ class AppCubit extends Cubit<AppStates> {
         showToast(state: ToastStates.ERROR,text: error.response!.data!['message']);
       }
       emit(AppErrorClaimFreeSeedsState(error: error.toString()));
+    });
+  }
+
+
+
+
+  File? postImage;
+  Uint8List? bytes;
+  String? base64Image;
+  final ImagePicker picker = ImagePicker();
+  void removePostImage() {
+    postImage = null;
+    emit(AppRemovePostImageState());
+  }
+
+  Future<void> getPostImage() async {
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    postImage = File(image!.path);
+    emit(AppPostImagePickedSuccessState());
+  }
+
+  void convertImageToBase64()
+  {
+    bytes=File(postImage!.path).readAsBytesSync();
+    base64Image=base64Encode(bytes!);
+    print('iamge base 64 here');
+    print(base64Image);
+  }
+
+
+  void createPost({
+    required String token,
+    required String? title,
+    required String? description,
+    required String? image,
+  }) {
+    emit(AppCreatePostLoadingState());
+
+    DioHelper.postData(
+        token: token,
+        url: CREATE_POST,
+        data: {
+          'title': title,
+          'description': description,
+          'imageBase64': 'data:image/png;base64,$image',
+        }).then((value) {
+      showToast(state: ToastStates.SUCCESS,text:value.data['message']);
+      getMyPosts(token);
+      emit(AppCreatePostSuccessState());
+    })
+        .catchError((error) {
+      if (kDebugMode) {
+        print(error.toString());
+      }
+      if(error is DioError)
+      {
+        showToast(state: ToastStates.ERROR,text: error.response!.data!['message']);
+      }
+      emit(AppCreatePostErrorState(error: error.toString()));
     });
   }
 

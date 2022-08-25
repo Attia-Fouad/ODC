@@ -11,7 +11,7 @@ class ScanScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body:  TextButton(
-          child: Text('LogOut'),
+          child: Text(''),
         onPressed: (){
           signOut(
             context,

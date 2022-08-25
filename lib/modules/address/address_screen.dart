@@ -21,7 +21,9 @@ class AddressScreen extends StatelessWidget {
       listener: (context, state) {
         if(state is AppSuccessGetLocationState)
           {
-            addressController.text=AppCubit.get(context).address.toString();
+            if(AppCubit.get(context).address.toString()!='null') {
+              addressController.text=AppCubit.get(context).address.toString();
+            }
           }
         if(state is AppSuccessClaimFreeSeedsState){
           if(state.message=='Success') {
@@ -56,23 +58,30 @@ class AddressScreen extends StatelessWidget {
                           fontWeight: FontWeight.w400,
                         ),),
                       const SizedBox(height: 35,),
-                      defaultFormField(
-                         onTap: (){
-                           cubit.getCurrentLocation();
-                           cubit.getAddress(cubit.position);
-                         },
-                        suffixIcon: IconBroken.Location,
-                        controller: addressController,
-                        label: 'Address',
-                        type: TextInputType.text,
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return 'Address must be not empty';
-                          } else {
-                            return null;
-                          }
+                      Row(
+                        children: [
+                          Expanded(
+                            child: defaultFormField(
+                              controller: addressController,
+                              label: 'Address',
+                              type: TextInputType.text,
+                              validator: (String? value) {
+                                if (value!.isEmpty) {
+                                  return 'Address must be not empty';
+                                } else {
+                                  return null;
+                                }
 
-                        },
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 10,),
+                          IconButton(onPressed: (){
+                            cubit.getCurrentLocation();
+                            cubit.getAddress(cubit.position);
+                          }, icon: const Icon(IconBroken.Location),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20,),
                       Conditional.single(

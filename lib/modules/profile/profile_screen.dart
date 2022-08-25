@@ -215,6 +215,7 @@ class ProfileScreen extends StatelessWidget {
                             InkWell(
                               onTap: (){
                                 signOut(context, const AuthScreen());
+                                cubit.currentIndex=2;
                               },
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 18),

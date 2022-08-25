@@ -9,4 +9,9 @@ const MY_POSTS = '/api/v1/forums/me';
 const UPDATE_USER_NAME = '/api/v1/user/me';
 const CLAIM_FREE_SEEDS = '/api/v1/user/me/claimFreeSeeds';
 const PLANTS = '/api/v1/plants';
+const PRODUCTS = '/api/v1/products';
+const SEEDS = '/api/v1/seeds';
+const TOOLS = '/api/v1/tools';
+const BLOGS = '/api/v1/products/blogs';
+const CREATE_POST = '/api/v1/forums';
 

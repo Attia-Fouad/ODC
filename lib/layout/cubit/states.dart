@@ -121,4 +121,63 @@ class AppErrorGetPlantsState extends AppStates {
 }
 
 
+class AppLoadingGetProductsState extends AppStates {}
 
+class AppSuccessGetProductsState extends AppStates {}
+
+class AppErrorGetProductsState extends AppStates {
+  String? error;
+  AppErrorGetProductsState({this.error});
+}
+
+class AppLoadingGetSeedsState extends AppStates {}
+
+class AppSuccessGetSeedsState extends AppStates {}
+
+class AppErrorGetSeedsState extends AppStates {
+  String? error;
+  AppErrorGetSeedsState({this.error});
+}
+
+
+
+
+class AppLoadingGetToolsState extends AppStates {}
+
+class AppSuccessGetToolsState extends AppStates {}
+
+class AppErrorGetToolsState extends AppStates {
+  String? error;
+  AppErrorGetToolsState({this.error});
+}
+
+class AppLoadingGetBlogsState extends AppStates {}
+
+class AppSuccessGetBlogsState extends AppStates {}
+
+class AppErrorGetBlogsState extends AppStates {
+  String? error;
+  AppErrorGetBlogsState({this.error});
+}
+
+class AppRemovePostImageState extends AppStates {}
+
+class AppPostImagePickedLoadingState extends AppStates {}
+
+class AppPostImagePickedSuccessState extends AppStates {}
+
+class AppPostImagePickedErrorState extends AppStates {
+  String? error;
+  AppPostImagePickedErrorState({this.error});
+}
+
+
+
+class AppCreatePostLoadingState extends AppStates {}
+
+class AppCreatePostSuccessState extends AppStates {}
+
+class AppCreatePostErrorState extends AppStates {
+  String? error;
+  AppCreatePostErrorState({this.error});
+}

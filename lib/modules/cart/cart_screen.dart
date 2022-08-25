@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:odc/layout/plants_model/Data.dart';
-import 'package:odc/layout/plants_model/PlantsModel.dart';
 import 'package:odc/modules/address/address_screen.dart';
 import 'package:odc/modules/search/search_screen.dart';
 import 'package:odc/shared/components/components.dart';

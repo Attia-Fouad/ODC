@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:odc/modules/new_post/new_post_screen.dart';
 import 'package:odc/modules/search/search_screen.dart';
 import 'package:odc/shared/components/components.dart';
 import 'package:odc/shared/components/constants.dart';
@@ -130,7 +131,7 @@ class PostsScreen extends StatelessWidget {
               floatingActionButton: FloatingActionButton(
                 backgroundColor: HexColor('#1ABC00'),
                 onPressed: () {
-                  //navigateTo(context, CreateNewPostScreen);
+                  navigateTo(context, const NewPostScreen());
                 },
                 child: const Icon(
                   Icons.add,
